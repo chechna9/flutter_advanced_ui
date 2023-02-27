@@ -139,7 +139,7 @@ class _ListHomeViewState extends State<ListHomeView>
       builder: (context, child) {
         if (!scrollController.hasClients ||
             draggedIDX == null ||
-            draggedIDX == null) {
+            dragOffset == null) {
           return Container();
         }
 
