@@ -58,6 +58,7 @@ class _ListHomeViewState extends State<ListHomeView>
   late AnimationController dragController;
   final ScrollController scrollController = ScrollController();
   List<int> emails = List.generate(20, (index) => index);
+  double actioThreshHoldRatio = 0.2;
   int? draggedIDX;
   int? dragOffset;
   bool shouldDrag = false;
@@ -65,6 +66,58 @@ class _ListHomeViewState extends State<ListHomeView>
   void initState() {
     super.initState();
     dragController = AnimationController.unbounded(vsync: this);
+  }
+
+  void _clearDragIndices(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      draggedIDX = null;
+      dragOffset = null;
+    }
+    dragController.removeStatusListener(_clearDragIndices);
+  }
+
+  void _removeItems(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      if (draggedIDX == null || dragOffset == null) {
+        dragOffset = null;
+        draggedIDX = null;
+        return;
+      }
+      int topIDX = min(draggedIDX!, draggedIDX! + dragOffset!);
+      int bottomIDX = max(draggedIDX!, draggedIDX! + dragOffset!);
+
+      emails.removeRange(topIDX, bottomIDX + 1);
+      setState(() {});
+      dragController.removeStatusListener(_removeItems);
+      dragController.value = 0;
+    }
+  }
+
+  void _animateDragEnd() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth * actioThreshHoldRatio > dragController.value.abs()) {
+      dragController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      dragController.addStatusListener(_clearDragIndices);
+    } else {
+      if (dragController.value > 0) {
+        dragController.animateTo(
+          screenWidth,
+          duration: const Duration(microseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        dragController.animateTo(
+          -screenWidth,
+          duration: const Duration(microseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+      dragController.addStatusListener(_removeItems);
+    }
   }
 
   List<Widget> getListItems() {
@@ -101,9 +154,7 @@ class _ListHomeViewState extends State<ListHomeView>
                         (details.localPosition.dy / LIST_ITEM_HEIGHT).floor();
                   },
                   onHorizontalDragEnd: (details) {
-                    dragController.value = 0;
-                    draggedIDX = null;
-                    dragOffset = null;
+                    _animateDragEnd();
                   },
                   child: getTileItem(email),
                 ),
