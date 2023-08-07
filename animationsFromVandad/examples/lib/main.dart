@@ -6,6 +6,7 @@ import 'package:animatedbuilder_transform/examples/example3.dart';
 import 'package:animatedbuilder_transform/examples/example4.dart';
 import 'package:animatedbuilder_transform/examples/example5.dart';
 import 'package:animatedbuilder_transform/examples/example6.dart';
+import 'package:animatedbuilder_transform/examples/example7.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: const Example6(),
+      home: const Example7(),
     );
   }
 }
