@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:animatedbuilder_transform/examples/example1.dart';
 import 'package:animatedbuilder_transform/examples/example2.dart';
 import 'package:animatedbuilder_transform/examples/example3.dart';
+import 'package:animatedbuilder_transform/examples/example4.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: const Example3(),
+      home: const Example4(),
     );
   }
 }
